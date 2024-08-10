@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whats_2/app/controller/home_controller.dart';
+import 'package:whats_2/modules/test/controller/home_controller.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
