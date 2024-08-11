@@ -2,6 +2,8 @@ import 'dart:convert'; // Para utf8.decode
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:whats_2/entity/user_entity.dart';
+import 'package:whats_2/global_controller.dart';
 
 class TcpController extends GetxController {
   late Socket _socket;
@@ -17,14 +19,21 @@ class TcpController extends GetxController {
   void _connectToServer() async {
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect('10.0.2.2', 65432);
+      _socket = await Socket.connect('0.tcp.sa.ngrok.io', 10215);
       print(
           'Connected to: ${_socket.remoteAddress.address}:${_socket.remotePort}');
 
       // Ouve por dados do servidor
-      _socket.listen((data) {
-        receivedData.value =
-            utf8.decode(data); // Atualiza a variável observável
+      _socket.listen((data) async {
+        receivedData.value = utf8.decode(data); // retorno do servidor
+
+        print(receivedData);
+        receivedData.toString;
+        final session =
+            await Get.find<GlobalController>().saveUserSession(UserEntity(
+          id: receivedData.substring(2),
+          // chats: [],
+        ));
       }, onError: (error) {
         print('Error: $error');
         _socket.destroy();
@@ -48,4 +57,8 @@ class TcpController extends GetxController {
     _socket.destroy();
     super.onClose();
   }
+
+  // TcpController saveId() {
+
+  // }
 }

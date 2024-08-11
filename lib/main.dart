@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:whats_2/data/view/tcp_view.dart';
-//import 'package:whats_2/modules/test/view/home_view.dart';
+import 'package:whats_2/global_controller.dart';
 
-void main() {
+void main() async {
+  Get.put<GlobalController>(GlobalController(), permanent: true);
+
+  await Get.find<GlobalController>().getUserSession();
   runApp(const MyApp());
 }
 

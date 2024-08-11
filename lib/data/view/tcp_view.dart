@@ -9,7 +9,7 @@ class TcpView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TCP Communication'),
+        title: const Text('TCP Communication'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -20,14 +20,14 @@ class TcpView extends StatelessWidget {
             }),
             TextField(
               controller: controller.textController,
-              decoration: InputDecoration(labelText: 'Send Message'),
+              decoration: const InputDecoration(labelText: 'Send Message'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 controller.sendMessage(controller.textController.text);
               },
-              child: Text('Send'),
+              child: const Text('Send'),
             ),
           ],
         ),
