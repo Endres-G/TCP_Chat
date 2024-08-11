@@ -28,10 +28,10 @@ class TcpController extends GetxController {
         receivedData.value = utf8.decode(data); // retorno do servidor
 
         print(receivedData);
-        receivedData.toString;
+        receivedData.toString; //NOSSO ID!
         final session =
             await Get.find<GlobalController>().saveUserSession(UserEntity(
-          id: receivedData.substring(2),
+          id: receivedData.substring(2), //salva o nosso ID na cache
           // chats: [],
         ));
       }, onError: (error) {
