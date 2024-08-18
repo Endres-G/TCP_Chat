@@ -22,7 +22,7 @@ class TcpController extends GetxController {
 
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect('10.0.2.2', 65432);
+      _socket = await Socket.connect(connectLocalHost, 65432);
       print(
           'Connected to: ${_socket.remoteAddress.address}:${_socket.remotePort}');
 

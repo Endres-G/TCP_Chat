@@ -9,6 +9,7 @@ class HomePage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text('Chat App'),
           bottom: TabBar(
             tabs: [

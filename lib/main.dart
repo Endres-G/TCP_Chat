@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
       initialBinding: AplicationBinding(),
       getPages: AppPages.routes,
       initialRoute: AppRoutes.splash,
-      title: 'Flutter Demo',
       theme: ThemeData(
         useMaterial3: true,
       ),
