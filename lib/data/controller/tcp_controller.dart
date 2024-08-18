@@ -17,9 +17,12 @@ class TcpController extends GetxController {
   }
 
   void _connectToServer() async {
+    String connectPaulao = "0.tcp.sa.ngrok.io";
+    String connectLocalHost = "10.0.2.2";
+
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect('0.tcp.sa.ngrok.io', 10215);
+      _socket = await Socket.connect('10.0.2.2', 65432);
       print(
           'Connected to: ${_socket.remoteAddress.address}:${_socket.remotePort}');
 
@@ -29,6 +32,7 @@ class TcpController extends GetxController {
 
         print(receivedData);
         receivedData.toString; //NOSSO ID!
+        print("VAI SALVAR NOSSO ID DA SESSÃO!");
         final session =
             await Get.find<GlobalController>().saveUserSession(UserEntity(
           id: receivedData.substring(2), //salva o nosso ID na cache

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:whats_2/data/view/tcp_view.dart';
-import 'package:whats_2/global_controller.dart';
+import 'package:whats_2/aplication_binding.dart';
+import 'package:whats_2/core/routes/app_pages.dart';
+import 'package:whats_2/core/routes/app_routes.dart';
 
 void main() async {
-  Get.put<GlobalController>(GlobalController(), permanent: true);
-
-  await Get.find<GlobalController>().getUserSession();
   runApp(const MyApp());
 }
 
@@ -16,11 +14,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialBinding: AplicationBinding(),
+      getPages: AppPages.routes,
+      initialRoute: AppRoutes.splash,
       title: 'Flutter Demo',
       theme: ThemeData(
         useMaterial3: true,
       ),
-      home: TcpView(),
     );
   }
 }
