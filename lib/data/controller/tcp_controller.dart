@@ -19,10 +19,11 @@ class TcpController extends GetxController {
   void _connectToServer() async {
     String connectPaulao = "0.tcp.sa.ngrok.io";
     String connectLocalHost = "192.168.0.106";
+    String connectLocalHostEmul = "10.0.2.2";
 
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect(connectLocalHost, 65432);
+      _socket = await Socket.connect(connectLocalHostEmul, 65432);
       print(
           'Connected to: ${_socket.remoteAddress.address}:${_socket.remotePort}');
 

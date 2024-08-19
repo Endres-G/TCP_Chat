@@ -11,7 +11,7 @@ class ChatBubble extends StatelessWidget {
     return Align(
       alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
         padding: EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           color: isSentByMe ? Colors.green[100] : Colors.grey[300],
