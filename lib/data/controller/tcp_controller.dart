@@ -23,7 +23,7 @@ class TcpController extends GetxController {
 
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect(connectLocalHostEmul, 65432);
+      _socket = await Socket.connect(connectPaulao, 15158);
       print(
           'Connected to: ${_socket.remoteAddress.address}:${_socket.remotePort}');
 
@@ -31,14 +31,17 @@ class TcpController extends GetxController {
       _socket.listen((data) async {
         receivedData.value = utf8.decode(data); // retorno do servidor
 
-        print(receivedData);
-        receivedData.toString; //NOSSO ID!
+        final id = receivedData.substring(2); //nosso ID
         print("VAI SALVAR NOSSO ID DA SESSÃO!");
         final session =
             await Get.find<GlobalController>().saveUserSession(UserEntity(
           id: receivedData.substring(2), //salva o nosso ID na cache
           // chats: [],
         ));
+        if (receivedData != null) {
+          print("VAILANÇAR UM   AAAAAAAAAAAAAAAAAAAAAAAA 03$id");
+          sendMessage("03$id"); //loga o user depois de registrado
+        }
       }, onError: (error) {
         print('Error: $error');
         _socket.destroy();

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:whats_2/modules/register/controller/register.controller.dart';
 
 class SplashView extends StatelessWidget {
+  const SplashView({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Obtenha uma instância do RegisterController
