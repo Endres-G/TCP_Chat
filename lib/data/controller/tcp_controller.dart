@@ -2,6 +2,7 @@ import 'dart:convert'; // Para utf8.decode
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:whats_2/entity/message_entity.dart';
 import 'package:whats_2/entity/user_entity.dart';
 import 'package:whats_2/global_controller.dart';
 
@@ -58,6 +59,15 @@ class TcpController extends GetxController {
     if (_socket != null) {
       _socket.write(message);
     }
+  }
+
+  void sendTextMessage(senderId, String receiverId, String content) async {
+    MessageEntity message = MessageEntity(
+      senderId: senderId,
+      receiverId: receiverId,
+      content: content,
+      timeStamp: DateTime.now(), // ou um timestamp específico
+    );
   }
 
   @override
