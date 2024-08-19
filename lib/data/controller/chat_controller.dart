@@ -1,12 +1,27 @@
-import 'package:whats_2/data/view/message.dart';
+import 'package:whats_2/entity/message_entity.dart';
+import 'package:whats_2/global_controller.dart';
 
 class ChatController {
-  List<Message> messages = [
-    Message(content: 'Olá!', isSentByMe: false),
-    Message(content: 'Oi, como vai?', isSentByMe: true),
-  ];
+  List<MessageEntity> messages = [];
+  final userId = GlobalController().getUserId();
 
-  void sendMessage(String content) {
-    messages.add(Message(content: content, isSentByMe: true));
+  void sendMessage({
+    required String content,
+    Future<String>? senderId,
+    required String receiverId,
+    required DateTime timeStamp,
+  }) {
+    final message = MessageEntity(
+      senderId: userId,
+      receiverId: receiverId,
+      content: content,
+      timeStamp: timeStamp,
+    );
+
+    messages.add(message);
+  }
+
+  bool isSentByMe(MessageEntity message) {
+    return message.senderId == userId;
   }
 }
