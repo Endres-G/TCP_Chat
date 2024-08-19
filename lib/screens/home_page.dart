@@ -10,8 +10,8 @@ class HomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text('Chat App'),
-          bottom: TabBar(
+          title: const Text('Chat App'),
+          bottom: const TabBar(
             tabs: [
               Tab(text: 'Conversas'),
               Tab(text: 'Grupos'),

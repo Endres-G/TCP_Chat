@@ -9,7 +9,7 @@ class ConversationsPage extends StatelessWidget {
       itemBuilder: (context, index) {
         return ListTile(
           title: Text('Conversa $index'),
-          subtitle: Text('Última mensagem...'),
+          subtitle: const Text('Última mensagem...'),
           onTap: () {
             Navigator.push(
               context,

@@ -22,9 +22,13 @@ class ChatScreen extends StatelessWidget {
               itemCount: _controller.messages.length,
               itemBuilder: (context, index) {
                 final message = _controller.messages[index];
-                return ChatBubble(
-                  message: message.content,
-                  isSentByMe: message.isSentByMe,
+                bool sentByMe = _controller.isSentByMe(message);
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ChatBubble(
+                    message: message.content ?? '',
+                    isSentByMe: sentByMe,
+                  ),
                 );
               },
             ),
