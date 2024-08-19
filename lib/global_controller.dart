@@ -18,6 +18,12 @@ class GlobalController extends GetxController {
         _keyUserSession, userEntity.toJsonString().toString());
   }
 
+  Future<String?> getUserId() async {
+    final userInstance = await Get.find<GlobalController>().getUserSession();
+    final userId = userInstance?.id;
+    return userId;
+  }
+
   Future<UserEntity?> getUserSession() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_keyUserSession);

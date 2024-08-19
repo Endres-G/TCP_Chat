@@ -18,7 +18,7 @@ class TcpController extends GetxController {
 
   void _connectToServer() async {
     String connectPaulao = "0.tcp.sa.ngrok.io";
-    String connectLocalHost = "10.0.2.2";
+    String connectLocalHost = "192.168.0.106";
 
     try {
       // Conecta ao servidor Python

@@ -3,17 +3,17 @@ import 'package:whats_2/core/widgets/chat_bubble.dart';
 import 'package:whats_2/core/widgets/message_input.dart';
 import 'package:whats_2/data/controller/chat_controller.dart';
 
-class ChatScreen extends StatelessWidget {
-  final String conversationTitle;
+class ChatPage extends StatelessWidget {
+  final String conversationId;
   final ChatController _controller = ChatController();
 
-  ChatScreen({required this.conversationTitle});
+  ChatPage({required this.conversationId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(conversationTitle),
+        title: Text(conversationId),
       ),
       body: Column(
         children: [
@@ -26,7 +26,7 @@ class ChatScreen extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ChatBubble(
-                    message: message.content ?? '',
+                    message: message.content,
                     isSentByMe: sentByMe,
                   ),
                 );
@@ -35,7 +35,13 @@ class ChatScreen extends StatelessWidget {
           ),
           MessageInput(
             onMessageSend: (text) {
-              _controller.sendMessage(text);
+              _controller.sendMessage(
+                content: text,
+                receiverId: conversationId,
+                timeStamp: DateTime.now(),
+              );
+              // Mostra a msg
+              (context as Element).markNeedsBuild();
             },
           ),
         ],
