@@ -49,9 +49,17 @@ class TcpController extends GetxController {
           // Trata as mensagens de confirmação aqui
           print("Mensagem de confirmação recebida: $receivedData");
         } else if (receivedData.startsWith('06')) {
+          await Get.find<GlobalController>().saveMessagesSession(MessageEntity(
+            content: receivedData.substring(43),
+            receiverId: receivedData.substring(15, 28),
+            senderId: receivedData.substring(2, 15),
+            timeStamp: receivedData.substring(28, 42),
+          ));
           print("ALGUEM QUER CONTATO????");
-          print(receivedData.value);
-          print(receivedData);
+          print(receivedData.substring(42));
+          print(receivedData.substring(15, 28));
+          print(receivedData.substring(2, 15));
+          print(receivedData.substring(28, 42));
         }
       }, onError: (error) {
         print('Error: $error');

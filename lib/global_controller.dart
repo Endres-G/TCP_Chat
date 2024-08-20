@@ -8,12 +8,21 @@ import 'package:whats_2/entity/user_entity.dart';
 class GlobalController extends GetxController {
   UserEntity? userEntity = UserEntity.empty();
   static const String _keyUserSession = "user_session";
+  static const String _keyMessageSession = "message_session";
+  static const String _keyChatSession = "chat_session";
 
   Future<void> saveUserSession(UserEntity userEntity) async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString(
         _keyUserSession, userEntity.toJsonString().toString());
+  }
+
+  Future<void> saveMessagesSession(MessageEntity messageEntity) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(
+        _keyMessageSession, messageEntity.toJsonString().toString());
   }
 
   Future<String?> getUserId() async {
@@ -25,7 +34,7 @@ class GlobalController extends GetxController {
   Future<UserEntity?> getUserSession() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_keyUserSession);
-
+    print("dentro do GEETTTTT cache do user");
     print(jsonString);
     if (jsonString != null) {
       final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
@@ -44,7 +53,7 @@ class GlobalController extends GetxController {
   Future<void> saveMessages(String userId, List<MessageEntity> messages) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> messageJsons =
-        messages.map((msg) => jsonEncode(msg.toJson())).toList();
+        messages.map((msg) => jsonEncode(msg.toMap())).toList();
     await prefs.setStringList('messages_$userId', messageJsons);
   }
 
