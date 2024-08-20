@@ -1,11 +1,16 @@
 import 'package:get/get.dart';
+import 'package:whats_2/entity/chat_entity.dart';
 import 'package:whats_2/entity/message_entity.dart';
+import 'package:whats_2/entity/user_entity.dart';
 import 'package:whats_2/global_controller.dart';
 
 class ChatController {
   List<MessageEntity> messages = [];
+  List<ChatEntity> conversations1 = [];
+  late Future<List<ChatEntity>?> conversations2;
 
   Future<MessageEntity?> sendMessageToList({
+    required List<MessageEntity>? list,
     required String content,
     String? senderId,
     required String receiverId,
@@ -19,11 +24,7 @@ class ChatController {
       content: content,
       timeStamp: timeStamp,
     );
-    print(userId);
-    print(message.content);
-    print(message.receiverId);
-    print(message.timeStamp);
-    messages.add(message);
+    list?.add(message);
     return message;
   }
 
@@ -31,5 +32,12 @@ class ChatController {
     final userId = await Get.find<GlobalController>().getUserId();
 
     return message.senderId == userId;
+  }
+
+//t
+  Future<List<ChatEntity>?> getChatsUser() async {
+    final userSession = await Get.find<GlobalController>().getUserSession();
+    print(userSession?.chats);
+    return userSession?.chats;
   }
 }

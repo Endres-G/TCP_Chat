@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:whats_2/data/controller/tcp_controller.dart';
 import 'package:whats_2/modules/conversation/view/chat_page.dart';
 import 'package:whats_2/entity/chat_entity.dart';
+import 'package:whats_2/modules/conversation/controller/chat_controller.dart';
 
 class ConversationsPage extends StatefulWidget {
   @override
@@ -9,22 +11,17 @@ class ConversationsPage extends StatefulWidget {
 
 class _ConversationsPageState extends State<ConversationsPage>
     with AutomaticKeepAliveClientMixin {
-  final List<ChatEntity> _conversations = [];
-
-  void _addChat(String id) {
-    setState(() {
-      _conversations.add(ChatEntity(receiver: id));
-    });
-  }
+  final ChatController chatController = ChatController();
+  final TcpController tcpController = TcpController();
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       body: ListView.builder(
-        itemCount: _conversations.length,
+        itemCount: chatController.conversations1.length,
         itemBuilder: (context, index) {
-          final chat = _conversations[index];
+          final chat = chatController.conversations1[index];
           var lastMessage = chat.lastMessage;
           lastMessage ?? (lastMessage = "última msg aqui");
           return ListTile(
@@ -34,7 +31,9 @@ class _ConversationsPageState extends State<ConversationsPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(conversationId: chat.receiver),
+                  builder: (context) => ChatPage(
+                    chatSelected: chat,
+                  ),
                 ),
               );
             },
@@ -78,6 +77,13 @@ class _ConversationsPageState extends State<ConversationsPage>
         );
       },
     );
+  }
+
+  void _addChat(String id) {
+    setState(() {
+      chatController.conversations1
+          .add(ChatEntity(receiver: id, messages: chatController.messages));
+    });
   }
 
   @override

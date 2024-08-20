@@ -9,7 +9,7 @@ class UserEntity extends GetxController {
 
   UserEntity({
     required this.id,
-    // required this.chats,
+    required this.chats,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,14 +23,14 @@ class UserEntity extends GetxController {
   static UserEntity empty() {
     return UserEntity(
       id: "",
-      // chats: [],
+      chats: [],
     );
   }
 
   static UserEntity fromMap(map) {
     return UserEntity(
       id: map['id'],
-      // chats: map['chats'],
+      chats: map['chats'],
     );
   }
 }

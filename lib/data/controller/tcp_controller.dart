@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:whats_2/entity/message_entity.dart';
 import 'package:whats_2/entity/user_entity.dart';
 import 'package:whats_2/global_controller.dart';
+import 'package:whats_2/modules/conversation/controller/chat_controller.dart';
 
 class TcpController extends GetxController {
   late Socket _socket;
@@ -12,6 +13,7 @@ class TcpController extends GetxController {
   final TextEditingController textController = TextEditingController();
   bool _isConnected = false; // Estado de conexão
   bool _idSaved = false; // Estado do ID
+  final ChatController chatController = ChatController();
 
   @override
   void onInit() {
@@ -40,8 +42,10 @@ class TcpController extends GetxController {
           final id = receivedData.substring(2); // nosso ID
           print("VAI SALVAR NOSSO ID DA SESSÃO!");
           await Get.find<GlobalController>().saveUserSession(UserEntity(
-            id: id, // salva o nosso ID na cache
-          ));
+              id: id,
+              chats: chatController
+                  .conversations1 // salva o nosso ID e chat na cache
+              ));
           _idSaved = true; // Marca como ID salvo
           sendMessage("03$id"); // Loga o user depois de registrado
         }
@@ -49,12 +53,13 @@ class TcpController extends GetxController {
           // Trata as mensagens de confirmação aqui
           print("Mensagem de confirmação recebida: $receivedData");
         } else if (receivedData.startsWith('06')) {
+          //salvando msg recebida
           await Get.find<GlobalController>().saveMessagesSession(MessageEntity(
             content: receivedData.substring(43),
             receiverId: receivedData.substring(15, 28),
             senderId: receivedData.substring(2, 15),
             timeStamp: receivedData.substring(28, 42),
-          ));
+          )); //salvar msg da cache pra lista??
           print("ALGUEM QUER CONTATO????");
           print(receivedData.substring(42));
           print(receivedData.substring(15, 28));
@@ -103,10 +108,16 @@ class TcpController extends GetxController {
     String sendMessageToServer =
         "05${message.senderId}${message.receiverId}${message.timeStamp}${message.content}";
 
-    print("AQUI É DENTRO DO ENVIO DE MENSAGEM!!!!!");
-    print(sendMessageToServer);
-
+    //salvando na cache
     _socket.write(sendMessageToServer);
+    if (receivedData.startsWith('07')) {
+      await Get.find<GlobalController>().saveMessagesSession(MessageEntity(
+        content: message.content,
+        receiverId: message.receiverId,
+        senderId: message.senderId,
+        timeStamp: message.timeStamp,
+      ));
+    }
   }
 
   @override

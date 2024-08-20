@@ -2,30 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:whats_2/core/widgets/chat_bubble.dart';
 import 'package:whats_2/core/widgets/message_input.dart';
 import 'package:whats_2/data/controller/tcp_controller.dart';
-import 'package:whats_2/modules/conversation/controller/chat_controller.dart';
+import 'package:whats_2/entity/chat_entity.dart';
+import 'package:whats_2/modules/conversation/controller/chat_controller.dart'; //chatController
 
 class ChatPage extends StatelessWidget {
-  final String conversationId;
-  final ChatController _controller = ChatController();
-  final TcpController controller = TcpController();
+  final ChatEntity chatSelected;
+  final ChatController chatController = ChatController();
+  final TcpController tcpController = TcpController();
   var time = DateTime.now().toUtc().millisecondsSinceEpoch / 1000;
 
-  ChatPage({required this.conversationId});
+  ChatPage({required this.chatSelected});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(conversationId),
+        title: Text(chatSelected.receiver), //colocar o id da conversa
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
-              itemCount: _controller.messages.length,
+              itemCount: chatSelected.messages?.length,
               itemBuilder: (context, index) {
-                final message = _controller.messages[index];
-                Future<bool> sentByMe = _controller.isSentByMe(message);
+                final message = chatSelected.messages?[
+                    index]; //pegando a mensagem da lista de mensagens do chat
+                Future<bool> sentByMe = chatController.isSentByMe(message!);
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ChatBubble(
@@ -38,13 +40,16 @@ class ChatPage extends StatelessWidget {
           ),
           MessageInput(
             onMessageSend: (text) {
-              controller.sendTextMessage(conversationId, text);
-              _controller.sendMessageToList(
+              tcpController.sendTextMessage(chatSelected.receiver,
+                  text); //enviando pro server e pra cache
+              chatController.sendMessageToList(
+                //enviando pra lista
+                list: chatSelected.messages,
                 content: text,
-                receiverId: conversationId,
+                receiverId: chatSelected.receiver,
                 timeStamp: time.toString().substring(1, 10),
               );
-              // Mostra a msg
+              // Mostra a msg na tela
               (context as Element).markNeedsBuild();
             },
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whats_2/entity/chat_entity.dart';
 import 'package:whats_2/entity/group_entity.dart';
 import 'package:whats_2/modules/conversation/view/chat_page.dart';
 
@@ -40,7 +41,7 @@ class _GroupsPageState extends State<GroupsPage>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(conversationId: group.idGroup),
+                  builder: (context) => Text("data"),
                 ),
               );
             },

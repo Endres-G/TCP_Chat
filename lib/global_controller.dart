@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:whats_2/entity/chat_entity.dart';
 import 'package:whats_2/entity/message_entity.dart';
 import 'package:whats_2/entity/user_entity.dart';
 
@@ -18,11 +19,28 @@ class GlobalController extends GetxController {
         _keyUserSession, userEntity.toJsonString().toString());
   }
 
+  Future<void> saveChatSession(ChatEntity chatEntity) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(
+        _keyChatSession, chatEntity.toJsonString().toString());
+  }
+
   Future<void> saveMessagesSession(MessageEntity messageEntity) async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString(
         _keyMessageSession, messageEntity.toJsonString().toString());
+  }
+
+  Future<ChatEntity?> getChatSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString(_keyChatSession);
+    if (jsonString != null) {
+      final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      return ChatEntity.fromJson(jsonMap);
+    }
+    return null;
   }
 
   Future<String?> getUserId() async {
@@ -34,8 +52,6 @@ class GlobalController extends GetxController {
   Future<UserEntity?> getUserSession() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_keyUserSession);
-    print("dentro do GEETTTTT cache do user");
-    print(jsonString);
     if (jsonString != null) {
       final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
       print(jsonMap["id"]);
