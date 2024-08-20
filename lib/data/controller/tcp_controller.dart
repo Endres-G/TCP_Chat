@@ -11,6 +11,7 @@ class TcpController extends GetxController {
   var receivedData = ''.obs; // Observable variable
   final TextEditingController textController = TextEditingController();
   bool _isConnected = false; // Estado de conexão
+  bool _idSaved = false; // Estado do ID
 
   @override
   void onInit() {
@@ -34,18 +35,23 @@ class TcpController extends GetxController {
       _socket.listen((data) async {
         receivedData.value = utf8.decode(data); // retorno do servidor
 
-        final id = receivedData.substring(2); //nosso ID
-        print("VAI SALVAR NOSSO ID DA SESSÃO!");
-        final session =
-            await Get.find<GlobalController>().saveUserSession(UserEntity(
-          id: receivedData.substring(2), //salva o nosso ID na cache
-          // chats: [],
-        ));
-        final userId = await Get.find<GlobalController>().getUserSession();
-
-        if (userId != null) {
-          print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-          sendMessage("03$id"); //loga o user depois de registrado
+        if (!_idSaved && receivedData.startsWith('02')) {
+          // Verifica se a mensagem contém o ID
+          final id = receivedData.substring(2); // nosso ID
+          print("VAI SALVAR NOSSO ID DA SESSÃO!");
+          await Get.find<GlobalController>().saveUserSession(UserEntity(
+            id: id, // salva o nosso ID na cache
+          ));
+          _idSaved = true; // Marca como ID salvo
+          sendMessage("03$id"); // Loga o user depois de registrado
+        }
+        if (receivedData.startsWith('07')) {
+          // Trata as mensagens de confirmação aqui
+          print("Mensagem de confirmação recebida: $receivedData");
+        } else if (receivedData.startsWith('06')) {
+          print("ALGUEM QUER CONTATO????");
+          print(receivedData.value);
+          print(receivedData);
         }
       }, onError: (error) {
         print('Error: $error');
@@ -91,8 +97,6 @@ class TcpController extends GetxController {
 
     print("AQUI É DENTRO DO ENVIO DE MENSAGEM!!!!!");
     print(sendMessageToServer);
-    print(_socket);
-    print("manda 01 ae porraaaaa");
 
     _socket.write(sendMessageToServer);
   }
