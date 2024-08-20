@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whats_2/screens/chat_page.dart';
+import 'package:whats_2/modules/conversation/view/chat_page.dart';
 import 'package:whats_2/entity/chat_entity.dart';
 
 class ConversationsPage extends StatefulWidget {

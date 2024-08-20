@@ -12,8 +12,6 @@ class GlobalController extends GetxController {
   Future<void> saveUserSession(UserEntity userEntity) async {
     final prefs = await SharedPreferences.getInstance();
 
-    print(userEntity.toMap().toString());
-    print(userEntity.toMap().toString().runtimeType);
     await prefs.setString(
         _keyUserSession, userEntity.toJsonString().toString());
   }

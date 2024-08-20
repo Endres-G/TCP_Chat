@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'conversations_page.dart';
+import '../modules/conversation/view/conversations_page.dart';
 import 'groups_page.dart';
 
 class HomePage extends StatelessWidget {

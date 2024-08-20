@@ -10,9 +10,7 @@ class SplashView extends StatelessWidget {
     // Obtenha uma instância do RegisterController
     final RegisterController registerController =
         Get.find<RegisterController>();
-    final now = DateTime.now().toUtc().millisecondsSinceEpoch / 1000;
 
-    print(now);
     // Verifica o usuário e redireciona
     Future.delayed(const Duration(seconds: 2), () async {
       await registerController.createUser();

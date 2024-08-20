@@ -1,8 +1,8 @@
 class MessageEntity {
-  Future<String?> senderId;
-  String receiverId;
+  String? senderId;
+  String? receiverId;
   String content;
-  DateTime? timeStamp;
+  String? timeStamp;
 
   MessageEntity({
     required this.senderId,
@@ -17,7 +17,7 @@ class MessageEntity {
       'senderId': senderId,
       'receiverId': receiverId,
       'content': content,
-      'timeStamp': timeStamp?.toIso8601String(),
+      'timeStamp': timeStamp,
     };
   }
 
@@ -27,8 +27,7 @@ class MessageEntity {
       senderId: json['senderId'],
       receiverId: json['receiverId'],
       content: json['content'],
-      timeStamp:
-          json['timeStamp'] != null ? DateTime.parse(json['timeStamp']) : null,
+      timeStamp: json['timeStamp'],
     );
   }
 }

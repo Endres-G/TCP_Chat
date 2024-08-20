@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:whats_2/data/controller/tcp_controller.dart';
 
 class MessageInput extends StatelessWidget {
   final Function(String) onMessageSend;
+  final TcpController controller = TcpController();
 
   MessageInput({required this.onMessageSend});
 

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:whats_2/core/widgets/chat_bubble.dart';
 import 'package:whats_2/core/widgets/message_input.dart';
-import 'package:whats_2/data/controller/chat_controller.dart';
+import 'package:whats_2/data/controller/tcp_controller.dart';
+import 'package:whats_2/modules/conversation/controller/chat_controller.dart';
 
 class ChatPage extends StatelessWidget {
   final String conversationId;
   final ChatController _controller = ChatController();
+  final TcpController controller = TcpController();
+  var time = DateTime.now().toUtc().millisecondsSinceEpoch / 1000;
 
   ChatPage({required this.conversationId});
 
@@ -22,7 +25,7 @@ class ChatPage extends StatelessWidget {
               itemCount: _controller.messages.length,
               itemBuilder: (context, index) {
                 final message = _controller.messages[index];
-                bool sentByMe = _controller.isSentByMe(message);
+                Future<bool> sentByMe = _controller.isSentByMe(message);
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ChatBubble(
@@ -35,10 +38,11 @@ class ChatPage extends StatelessWidget {
           ),
           MessageInput(
             onMessageSend: (text) {
-              _controller.sendMessage(
+              controller.sendTextMessage(conversationId, text);
+              _controller.sendMessageToList(
                 content: text,
                 receiverId: conversationId,
-                timeStamp: DateTime.now(),
+                timeStamp: time.toString().substring(1, 10),
               );
               // Mostra a msg
               (context as Element).markNeedsBuild();

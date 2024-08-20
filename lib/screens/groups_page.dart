@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whats_2/entity/group_entity.dart';
-import 'package:whats_2/screens/chat_page.dart';
+import 'package:whats_2/modules/conversation/view/chat_page.dart';
 
 class GroupsPage extends StatefulWidget {
   @override
