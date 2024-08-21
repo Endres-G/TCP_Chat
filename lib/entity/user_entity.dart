@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:whats_2/entity/chat_entity.dart';
 
 class UserEntity extends GetxController {
-  String? id;
-  List<ChatEntity>? chats;
+  String id;
+  List<dynamic> chats;
 
   UserEntity({
     required this.id,
@@ -18,13 +18,6 @@ class UserEntity extends GetxController {
 
   String toJsonString() {
     return jsonEncode(toMap());
-  }
-
-  static UserEntity empty() {
-    return UserEntity(
-      id: "",
-      chats: [],
-    );
   }
 
   static UserEntity fromMap(map) {

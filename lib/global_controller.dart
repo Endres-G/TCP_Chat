@@ -7,7 +7,6 @@ import 'package:whats_2/entity/message_entity.dart';
 import 'package:whats_2/entity/user_entity.dart';
 
 class GlobalController extends GetxController {
-  UserEntity? userEntity = UserEntity.empty();
   static const String _keyUserSession = "user_session";
   static const String _keyMessageSession = "message_session";
   static const String _keyChatSession = "chat_session";

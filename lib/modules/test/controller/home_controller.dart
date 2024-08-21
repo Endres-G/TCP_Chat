@@ -1,6 +1,10 @@
 import 'package:get/get.dart';
+import 'package:whats_2/entity/user_entity.dart';
+import 'package:whats_2/global_controller.dart';
 
 class HomeController extends GetxController {
-  final count = 0
-      .obs; //.obs observa o value dessa variavel portanto temos acesso em outros lugares quando chamamos
+  Future<UserEntity?> getUser() async {
+    final session = await Get.find<GlobalController>().getUserSession();
+    return session;
+  }
 }

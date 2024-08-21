@@ -2,6 +2,7 @@ import 'dart:convert'; // Para utf8.decode
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:whats_2/entity/chat_entity.dart';
 import 'package:whats_2/entity/message_entity.dart';
 import 'package:whats_2/entity/user_entity.dart';
 import 'package:whats_2/global_controller.dart';
@@ -9,6 +10,7 @@ import 'package:whats_2/modules/conversation/controller/chat_controller.dart';
 
 class TcpController extends GetxController {
   late Socket _socket;
+  List<ChatEntity> userChats = [];
   var receivedData = ''.obs; // Observable variable
   final TextEditingController textController = TextEditingController();
   bool _isConnected = false; // Estado de conexão
@@ -28,51 +30,57 @@ class TcpController extends GetxController {
 
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect(connectPaulao, 18148);
+      _socket = await Socket.connect(connectLocalHostEmul, 65431);
       print(
           'Connected to: ${_socket.remoteAddress.address}:${_socket.remotePort}');
       _isConnected = true;
 
       // Ouve por dados do servidor
-      _socket.listen((data) async {
-        receivedData.value = utf8.decode(data); // retorno do servidor
+      _socket.listen(
+        (data) async {
+          receivedData.value = utf8.decode(data); // retorno do servidor
 
-        if (!_idSaved && receivedData.startsWith('02')) {
-          // Verifica se a mensagem contém o ID
-          final id = receivedData.substring(2); // nosso ID
-          print("VAI SALVAR NOSSO ID DA SESSÃO!");
-          await Get.find<GlobalController>().saveUserSession(UserEntity(
-              id: id,
-              chats: chatController
-                  .conversations1 // salva o nosso ID e chat na cache
-              ));
-          _idSaved = true; // Marca como ID salvo
-          sendMessage("03$id"); // Loga o user depois de registrado
-        }
-        if (receivedData.startsWith('07')) {
-          // Trata as mensagens de confirmação aqui
-          print("Mensagem de confirmação recebida: $receivedData");
-        } else if (receivedData.startsWith('06')) {
-          //salvando msg recebida
-          await Get.find<GlobalController>().saveMessagesSession(MessageEntity(
-            content: receivedData.substring(43),
-            receiverId: receivedData.substring(15, 28),
-            senderId: receivedData.substring(2, 15),
-            timeStamp: receivedData.substring(28, 42),
-          )); //salvar msg da cache pra lista??
-          print("ALGUEM QUER CONTATO????");
-          print(receivedData.substring(42));
-          print(receivedData.substring(15, 28));
-          print(receivedData.substring(2, 15));
-          print(receivedData.substring(28, 42));
-        }
-      }, onError: (error) {
-        print('Error: $error');
-        _socket.destroy();
-      }, onDone: () {
-        print('Server disconnected');
-        _socket.destroy();
-      });
+          if (!_idSaved && receivedData.startsWith('02')) {
+            // Verifica se a mensagem contém o ID
+            final id = receivedData.substring(2); // nosso ID
+            print("VAI SALVAR NOSSO ID DA SESSÃO!");
+            await Get.find<GlobalController>().saveUserSession(UserEntity(
+                id: id, chats: userChats // salva o nosso ID e chat na cache
+                ));
+            _idSaved = true; // Marca como ID salvo
+            sendMessage("03$id"); // Loga o user depois de registrado
+          }
+          if (receivedData.startsWith('07')) {
+            final userInstance =
+                await Get.find<GlobalController>().getUserSession();
+            print("yyy${userInstance?.chats}");
+            await Get.find<GlobalController>().saveUserSession(UserEntity(
+                id: userInstance!.id,
+                chats: userChats // salva o nosso ID e chat na cache
+                ));
+            // Trata as mensagens de confirmação aqui
+            print("Mensagem de confirmação recebida: $receivedData");
+          } else if (receivedData.startsWith('06')) {
+            //salvando msg recebida
+            await Get.find<GlobalController>()
+                .saveMessagesSession(MessageEntity(
+              content: receivedData.substring(43),
+              receiverId: receivedData.substring(15, 28),
+              senderId: receivedData.substring(2, 15),
+              timeStamp: receivedData.substring(28, 42),
+            )); //salvar msg da cache pra lista??
+            print("ALGUEM QUER CONTATO????");
+            print(receivedData.substring(42));
+            print(receivedData.substring(15, 28));
+            print(receivedData.substring(2, 15));
+            print(receivedData.substring(28, 42));
+          }
+        },
+        onError: (error) {
+          print('Error: $error');
+          _socket.destroy();
+        },
+      );
     } catch (e) {
       print('Unable to connect: $e');
     }
