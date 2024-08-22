@@ -17,24 +17,15 @@ class ChatPage extends GetView<TcpController> {
 
   final ChatController chatController = ChatController();
 
-  a(String receiver, String text) async {
-    // enviando msg pro server
+  sendTextMessage(String receiver, String text) async {
     await controller.sendTextMessage(receiver, text);
-
-    // // atualizando o usuário salvando o chat com uma mensagem
-    // final a = await Get.find<GlobalController>().getUserSession();
-
-    // await Get.find<GlobalController>().saveUserSession(
-    //   UserEntity(id: id!, chats: chatList // salva o nosso ID e chat na cache
-    //       ),
-    // );
   }
 
   @override
   Widget build(BuildContext context) {
     return Obx(
       () {
-        print(controller.count);
+        final _count = controller.count.value;
         ChatEntity chat = controller.userChats.value[index];
         return Scaffold(
           appBar: AppBar(
@@ -59,7 +50,9 @@ class ChatPage extends GetView<TcpController> {
                   },
                 ),
               ),
-              MessageInput(onMessageSend: (value) => a(chat.receiver, value)),
+              MessageInput(
+                  onMessageSend: (value) =>
+                      sendTextMessage(chat.receiver, value)),
             ],
           ),
         );
