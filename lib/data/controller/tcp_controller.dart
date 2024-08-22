@@ -39,8 +39,12 @@ class TcpController extends GetxController {
       // Conecta ao servidor Python
       _socket = await Socket.connect(connectPaulao, 17546);
       final currentUser = await Get.find<GlobalController>().getUserSession();
-      userChats.value = currentUser!.chats;
-      currentUserId = currentUser.id;
+      if (currentUser == null) {
+        sendMessage("01");
+      } else {
+        userChats.value = currentUser!.chats;
+        currentUserId = currentUser.id;
+      }
       print(
           'Connected to: ${_socket.remoteAddress.address}:${_socket.remotePort}');
       _isConnected = true;
@@ -60,30 +64,11 @@ class TcpController extends GetxController {
             // Verifica se a mensagem contém o ID
             final id = receivedData.substring(2); // nosso ID
             print("VAI SALVAR NOSSO ID DA SESSÃO!");
-            await Get.find<GlobalController>().saveUserSession(UserEntity(
-                id: id,
-                chats: userChats.value // salva o nosso ID e chat na cache
-                ));
+            await Get.find<GlobalController>().saveUserSession(
+                UserEntity(id: id, chats: [] // salva o nosso ID e chat na cache
+                    ));
             _idSaved = true; // Marca como ID salvo
             sendMessage("03$id"); // Loga o user depois de registrado
-          }
-          if (receivedData.startsWith('07')) {
-            print("qqqqqqqqqqqqqqqqqq");
-            print(receivedData);
-            // int index = userChats.value.indexWhere((e) =>
-            //     e.receiver == mensagemRecebida.receiverId ||
-            //     e.receiver == mensagemRecebida.senderId);
-            // ChatEntity selectedChat = userChats.value[index];
-            // selectedChat.messages!.add(mensagemRecebida);
-            // userChats[index] = selectedChat;
-
-            // print("yyy${userChats}");
-            // await Get.find<GlobalController>().saveUserSession(UserEntity(
-            //   id: currentUserId,
-            //   chats: userChats, // salva o nosso ID e chat na cache
-            // ));
-            // Trata as mensagens de confirmação aqui
-            print("Mensagem de confirmação recebida: $receivedData");
           } else if (receivedData.startsWith('06')) {
             //salvando msg recebida
             final MessageEntity mensagemRecebida = MessageEntity(
@@ -92,6 +77,7 @@ class TcpController extends GetxController {
               senderId: receivedData.substring(2, 15),
               timeStamp: receivedData.substring(28, 38),
             );
+            await saveNewMessage(mensagemRecebida);
             print("aaaaaaaaaaaaa");
             //pegando a mensagem recebida
             final userInstance =
@@ -178,6 +164,11 @@ class TcpController extends GetxController {
     print(sendMessageToServer);
     _socket.write(sendMessageToServer);
     print(userChats);
+    await saveNewMessage(message);
+    return userId;
+  }
+
+  Future<void> saveNewMessage(MessageEntity message) async {
     int index =
         userChats.value.indexWhere((e) => e.receiver == message.receiverId);
     ChatEntity selectedChat = userChats.value[index];
@@ -189,7 +180,6 @@ class TcpController extends GetxController {
       id: currentUserId,
       chats: userChats.value, // salva o nosso ID e chat na cache
     ));
-    return userId;
   }
 
   @override
