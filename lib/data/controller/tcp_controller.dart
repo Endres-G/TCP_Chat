@@ -2,6 +2,7 @@ import 'dart:convert'; // Para utf8.decode
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:whats_2/core/routes/app_routes.dart';
 import 'package:whats_2/entity/chat_entity.dart';
 import 'package:whats_2/entity/message_entity.dart';
 import 'package:whats_2/entity/user_entity.dart';
@@ -21,13 +22,8 @@ class TcpController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    final a = await Get.find<GlobalController>().getUserSession();
-    print(a!.chats);
-    userChats.value = a.chats;
-    currentUserId = a.id;
-    await Future.delayed(Duration(seconds: 2));
+
     _connectToServer();
-    print("LLLLLLLLLLLLLLLL");
   }
 
   Future<void> _connectToServer() async {
@@ -41,6 +37,7 @@ class TcpController extends GetxController {
       final currentUser = await Get.find<GlobalController>().getUserSession();
       if (currentUser == null) {
         sendMessage("01");
+        Get.toNamed(AppRoutes.home);
       } else {
         userChats.value = currentUser!.chats;
         currentUserId = currentUser.id;
@@ -69,6 +66,7 @@ class TcpController extends GetxController {
                     ));
             _idSaved = true; // Marca como ID salvo
             sendMessage("03$id"); // Loga o user depois de registrado
+            Get.toNamed(AppRoutes.home);
           } else if (receivedData.startsWith('06')) {
             //salvando msg recebida
             final MessageEntity mensagemRecebida = MessageEntity(
