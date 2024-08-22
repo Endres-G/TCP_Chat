@@ -71,11 +71,53 @@ class _ConversationsPageState extends State<ConversationsPage>
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _addChatButton(),
-        child: Icon(Icons.add),
+      floatingActionButton: Column(
+        children: [
+          FloatingActionButton(
+            onPressed: () => _addChatButton(),
+            child: Icon(Icons.add),
+          ),
+          FloatingActionButton(
+            onPressed: () => escolheHost(),
+            child: Icon(Icons.accessibility_new),
+          )
+        ],
       ),
     );
+  }
+
+  void escolheHost() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          final TextEditingController _portSocketController =
+              TextEditingController();
+
+          return AlertDialog(
+            title: Text('Adicionar Conversa:'),
+            content: TextField(
+              controller: _portSocketController,
+              decoration: InputDecoration(hintText: 'ID:'),
+            ),
+            actions: [
+              TextButton(
+                child: Text('Cancelar'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text('Porta do HOST'),
+                onPressed: () {
+                  final port = "${_portSocketController.text}"
+                      .obs; //tenho q mandar essa porta pra tcp controiller
+
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   void _addChatButton() {

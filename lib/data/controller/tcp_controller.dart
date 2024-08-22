@@ -28,12 +28,12 @@ class TcpController extends GetxController {
 
   Future<void> _connectToServer() async {
     String connectPaulao = "0.tcp.sa.ngrok.io";
-    String connectLocalHost = "192.168.0.106";
+    String connectLocalHost = "192.168.18.11";
     String connectLocalHostEmul = "10.0.2.2";
 
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect(connectPaulao, 17546);
+      _socket = await Socket.connect(connectLocalHost, 65431);
       final currentUser = await Get.find<GlobalController>().getUserSession();
       if (currentUser == null) {
         sendMessage("01");
