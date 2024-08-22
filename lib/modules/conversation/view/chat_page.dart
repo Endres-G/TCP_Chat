@@ -1,55 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:whats_2/core/widgets/chat_bubble.dart';
 import 'package:whats_2/core/widgets/message_input.dart';
 import 'package:whats_2/data/controller/tcp_controller.dart';
-import 'package:whats_2/modules/conversation/controller/chat_controller.dart';
+import 'package:whats_2/entity/chat_entity.dart';
+import 'package:whats_2/entity/message_entity.dart';
+import 'package:whats_2/entity/user_entity.dart';
+import 'package:whats_2/global_controller.dart';
+import 'package:whats_2/modules/conversation/controller/chat_controller.dart'; //chatController
 
-class ChatPage extends StatelessWidget {
-  final String conversationId;
-  final ChatController _controller = ChatController();
-  final TcpController controller = TcpController();
-  var time = DateTime.now().toUtc().millisecondsSinceEpoch / 1000;
+class ChatPage extends GetView<TcpController> {
+  final int index;
 
-  ChatPage({required this.conversationId});
+  ChatPage({super.key, required this.index});
+
+  final ChatController chatController = ChatController();
+
+  sendTextMessage(String receiver, String text) async {
+    await controller.sendTextMessage(receiver, text);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(conversationId),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _controller.messages.length,
-              itemBuilder: (context, index) {
-                final message = _controller.messages[index];
-                Future<bool> sentByMe = _controller.isSentByMe(message);
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ChatBubble(
-                    message: message.content,
-                    isSentByMe: sentByMe,
-                  ),
-                );
-              },
-            ),
+    return Obx(
+      () {
+        final _count = controller.count.value;
+        ChatEntity chat = controller.userChats.value[index];
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(chat.receiver), //colocar o id da conversa
           ),
-          MessageInput(
-            onMessageSend: (text) {
-              controller.sendTextMessage(conversationId, text);
-              _controller.sendMessageToList(
-                content: text,
-                receiverId: conversationId,
-                timeStamp: time.toString().substring(1, 10),
-              );
-              // Mostra a msg
-              (context as Element).markNeedsBuild();
-            },
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: chat.messages?.length,
+                  itemBuilder: (context, index) {
+                    final message = chat.messages?[index];
+                    bool sentByMe = chat.messages?[index].senderId ==
+                        controller.currentUserId;
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ChatBubble(
+                        message: message?.content ?? "Error",
+                        isSentByMe: sentByMe,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              MessageInput(
+                  onMessageSend: (value) =>
+                      sendTextMessage(chat.receiver, value)),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
