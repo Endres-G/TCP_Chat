@@ -10,43 +10,16 @@ import 'package:whats_2/entity/user_entity.dart';
 import 'package:whats_2/global_controller.dart';
 import 'package:whats_2/modules/conversation/controller/chat_controller.dart'; //chatController
 
-class ChatPage extends StatefulWidget {
-  final ChatEntity chatSelected;
+class ChatPage extends GetView<TcpController> {
+  final int index;
 
-  const ChatPage({super.key, required this.chatSelected});
+  ChatPage({super.key, required this.index});
 
-  @override
-  State<ChatPage> createState() => _ChatPageState();
-}
-
-class _ChatPageState extends State<ChatPage> {
   final ChatController chatController = ChatController();
-  final TcpController tcpController = TcpController();
 
-  late ChatEntity chat;
-
-  @override
-  initState() {
-    chat = widget.chatSelected;
-    super.initState();
-  }
-
-  a(String text) async {
-    final double time = DateTime.now().toUtc().millisecondsSinceEpoch / 1000;
-
+  a(String receiver, String text) async {
     // enviando msg pro server
-    final id = await tcpController.sendTextMessage(chat.receiver, text);
-
-    MessageEntity messageDone = MessageEntity(
-        senderId: id,
-        receiverId: chat.receiver,
-        content: text,
-        timeStamp: time.toString());
-
-    // adicionando MessageEntity na lista de MessageEntity do Chat
-    setState(() {
-      chat.messages?.add(messageDone);
-    });
+    await controller.sendTextMessage(receiver, text);
 
     // // atualizando o usuário salvando o chat com uma mensagem
     // final a = await Get.find<GlobalController>().getUserSession();
@@ -59,32 +32,38 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(chat.receiver), //colocar o id da conversa
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: chat.messages?.length,
-              itemBuilder: (context, index) {
-                final message = chat.messages?[index];
-                Future<bool> sentByMe =
-                    chatController.isSentByMe(chat.receiver);
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ChatBubble(
-                    message: message?.content ?? "Error",
-                    isSentByMe: sentByMe,
-                  ),
-                );
-              },
-            ),
+    return Obx(
+      () {
+        print(controller.count);
+        ChatEntity chat = controller.userChats.value[index];
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(chat.receiver), //colocar o id da conversa
           ),
-          MessageInput(onMessageSend: a),
-        ],
-      ),
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: chat.messages?.length,
+                  itemBuilder: (context, index) {
+                    final message = chat.messages?[index];
+                    Future<bool> sentByMe =
+                        chatController.isSentByMe(chat.receiver);
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ChatBubble(
+                        message: message?.content ?? "Error",
+                        isSentByMe: sentByMe,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              MessageInput(onMessageSend: (value) => a(chat.receiver, value)),
+            ],
+          ),
+        );
+      },
     );
   }
 }

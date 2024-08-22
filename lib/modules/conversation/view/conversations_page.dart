@@ -60,7 +60,7 @@ class _ConversationsPageState extends State<ConversationsPage>
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChatPage(
-                          chatSelected: chat,
+                          index: index,
                         ),
                       ),
                     );

@@ -2,22 +2,22 @@ import 'dart:convert'; // Para utf8.decode
 import 'dart:io';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:whats_2/core/routes/app_routes.dart';
 import 'package:whats_2/entity/chat_entity.dart';
 import 'package:whats_2/entity/message_entity.dart';
 import 'package:whats_2/entity/user_entity.dart';
 import 'package:whats_2/global_controller.dart';
-import 'package:whats_2/modules/conversation/controller/chat_controller.dart';
 
 class TcpController extends GetxController {
   late Socket _socket;
   Rx<List<ChatEntity>> userChats = Rx<List<ChatEntity>>([]);
+  RxInt count = 0.obs;
   late String currentUserId;
   var receivedData = ''.obs; // Observable variable
   final TextEditingController textController = TextEditingController();
   bool _isConnected = false; // Estado de conexão
   bool _idSaved = false; // Estado do ID
-  final ChatController chatController = ChatController();
 
   @override
   void onInit() async {
@@ -75,8 +75,7 @@ class TcpController extends GetxController {
               senderId: receivedData.substring(2, 15),
               timeStamp: receivedData.substring(28, 37),
             );
-            await saveNewMessage(
-                mensagemRecebida, mensagemRecebida.receiverId!);
+            await saveNewMessage(mensagemRecebida, mensagemRecebida.senderId!);
             print("aaaaaaaaaaaaa");
             //pegando a mensagem recebida
             final userInstance =
@@ -175,8 +174,8 @@ class TcpController extends GetxController {
     ChatEntity selectedChat = userChats.value[index];
     selectedChat.messages!.add(message);
     userChats.value[index] = selectedChat;
-
-    print("yyy${userChats.value}");
+    count.value += 1;
+    print("yyy${userChats.value[index]}");
     await Get.find<GlobalController>().saveUserSession(UserEntity(
       id: currentUserId,
       chats: userChats.value, // salva o nosso ID e chat na cache
