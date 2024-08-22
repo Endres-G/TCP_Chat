@@ -70,12 +70,13 @@ class TcpController extends GetxController {
           } else if (receivedData.startsWith('06')) {
             //salvando msg recebida
             final MessageEntity mensagemRecebida = MessageEntity(
-              content: receivedData.substring(38),
+              content: receivedData.substring(37),
               receiverId: receivedData.substring(15, 28),
               senderId: receivedData.substring(2, 15),
-              timeStamp: receivedData.substring(28, 38),
+              timeStamp: receivedData.substring(28, 37),
             );
-            await saveNewMessage(mensagemRecebida);
+            await saveNewMessage(
+                mensagemRecebida, mensagemRecebida.receiverId!);
             print("aaaaaaaaaaaaa");
             //pegando a mensagem recebida
             final userInstance =
@@ -146,10 +147,10 @@ class TcpController extends GetxController {
       await _connectToServer(); // Tenta reconectar
     }
     var time = DateTime.now().toUtc().millisecondsSinceEpoch / 1000;
-    final userId = await Get.find<GlobalController>().getUserId();
+    //final userId = await Get.find<GlobalController>().getUserId();
 
     MessageEntity message = MessageEntity(
-      senderId: userId,
+      senderId: currentUserId,
       receiverId: receiverId,
       content: content,
       timeStamp: time.toString().substring(1, 10), // ou um timestamp específico
@@ -162,13 +163,15 @@ class TcpController extends GetxController {
     print(sendMessageToServer);
     _socket.write(sendMessageToServer);
     print(userChats);
-    await saveNewMessage(message);
-    return userId;
+    await saveNewMessage(message, message.receiverId!);
+    return currentUserId;
   }
 
-  Future<void> saveNewMessage(MessageEntity message) async {
-    int index =
-        userChats.value.indexWhere((e) => e.receiver == message.receiverId);
+  Future<void> saveNewMessage(MessageEntity message, String userChatId) async {
+    print("AAAAAAAAAAAAAAAAA");
+    print(userChats.value.map((e) => e.receiver));
+    print(userChatId);
+    int index = userChats.value.indexWhere((e) => e.receiver == userChatId);
     ChatEntity selectedChat = userChats.value[index];
     selectedChat.messages!.add(message);
     userChats.value[index] = selectedChat;
