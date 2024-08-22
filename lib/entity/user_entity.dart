@@ -28,8 +28,6 @@ class UserEntity extends GetxController {
     return UserEntity(
       id: map['id'],
       chats: List<ChatEntity>.from(map['chats'].map((chat) {
-        print(chat);
-        print(chat.runtimeType);
         return ChatEntity.fromMap(chat);
       })),
     );

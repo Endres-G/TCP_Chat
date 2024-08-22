@@ -14,7 +14,7 @@ class MessageEntity {
   });
 
   // Serializa a mensagem para JSON
-  Map<String, dynamic> tsoMap() {
+  Map<String, dynamic> toMap() {
     return {
       'senderId': senderId,
       'receiverId': receiverId,

@@ -30,7 +30,7 @@ class TcpController extends GetxController {
 
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect(connectPaulao, 10715);
+      _socket = await Socket.connect(connectPaulao, 17546);
       print(
           'Connected to: ${_socket.remoteAddress.address}:${_socket.remotePort}');
       _isConnected = true;
@@ -38,8 +38,9 @@ class TcpController extends GetxController {
       // Ouve por dados do servidor
       _socket.listen(
         (data) async {
+          print("+++++++++++++++++++++++++");
           receivedData.value = utf8.decode(data); // retorno do servidor
-
+          print(receivedData);
           if (!_idSaved && receivedData.startsWith('02')) {
             // Verifica se a mensagem contém o ID
             final id = receivedData.substring(2); // nosso ID
@@ -66,7 +67,8 @@ class TcpController extends GetxController {
             //pegando a mensagem recebida
             final userInstance =
                 await Get.find<GlobalController>().getUserSession();
-
+            print("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
+            print(userInstance?.chats);
             final ChatEntity chatSelected = userInstance!.chats[0];
 
             final MessageEntity mensagemRecebida = MessageEntity(

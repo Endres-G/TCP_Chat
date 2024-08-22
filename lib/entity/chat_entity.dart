@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:whats_2/entity/message_entity.dart';
 
 class ChatEntity extends GetxController {
-  List<dynamic>? messages;
+  List<MessageEntity>? messages;
   String receiver;
   DateTime? lastViewedMessage;
   DateTime? lastReceivedMessage;
@@ -32,7 +32,9 @@ class ChatEntity extends GetxController {
 
   factory ChatEntity.fromMap(Map<String, dynamic> map) {
     return ChatEntity(
-      messages: map["messages"] is! List<MessageEntity> ? map["messages"] : [],
+      messages: List<MessageEntity>.from(map['messages'].map((chat) {
+        return MessageEntity.fromMap(chat);
+      })),
       receiver: map["receiver"],
     );
   }
