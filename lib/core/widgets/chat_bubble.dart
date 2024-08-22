@@ -2,48 +2,23 @@ import 'package:flutter/material.dart';
 
 class ChatBubble extends StatelessWidget {
   final String message;
-  final Future<bool> isSentByMe;
+  final bool isSentByMe;
 
   ChatBubble({required this.message, required this.isSentByMe});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: isSentByMe,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Align(
-            alignment: Alignment.center,
-            child:
-                CircularProgressIndicator(), // Pode ser um placeholder enquanto carrega
-          );
-        } else if (snapshot.hasError) {
-          return Align(
-            alignment: Alignment.center,
-            child: Text('Error: ${snapshot.error}'),
-          );
-        } else if (snapshot.hasData) {
-          final bool sentByMe = snapshot.data ?? false;
-          return Align(
-            alignment: sentByMe ? Alignment.centerRight : Alignment.centerLeft,
-            child: Container(
-              margin:
-                  const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                color: sentByMe ? Colors.green[100] : Colors.grey[300],
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Text(message),
-            ),
-          );
-        } else {
-          return Align(
-            alignment: Alignment.center,
-            child: Text('No data'),
-          );
-        }
-      },
+    return Align(
+      alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+        padding: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: isSentByMe ? Colors.green[100] : Colors.grey[300],
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Text(message),
+      ),
     );
   }
 }

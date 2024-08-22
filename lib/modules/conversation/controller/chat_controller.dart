@@ -28,12 +28,6 @@ class ChatController {
     return list;
   }
 
-  Future<bool> isSentByMe(dynamic receiverId) async {
-    final userId = await Get.find<GlobalController>().getUserId();
-
-    return receiverId != userId;
-  }
-
 //t
   Future<List?> getChatsUser() async {
     final userSession = await Get.find<GlobalController>().getUserSession();

@@ -38,8 +38,8 @@ class ChatPage extends GetView<TcpController> {
                   itemCount: chat.messages?.length,
                   itemBuilder: (context, index) {
                     final message = chat.messages?[index];
-                    Future<bool> sentByMe =
-                        chatController.isSentByMe(chat.receiver);
+                    bool sentByMe = chat.messages?[index].senderId ==
+                        controller.currentUserId;
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ChatBubble(
