@@ -116,20 +116,22 @@ class _ConversationsPageState extends State<ConversationsPage>
 
     if (user != null) {
       // Atualiza o estado com a cópia local do usuário
+      final List<ChatEntity> chats = Get.find<TcpController>().userChats.value;
+      chats.add(ChatEntity(receiver: id, messages: []));
       print("aaa${user.chats}");
       setState(() {
         print("sss${chatController.messages}");
-        user.chats
-            ?.add(ChatEntity(receiver: id, messages: chatController.messages));
+        user.chats = chats;
 
         // Atualiza o Future para refletir a mudança
 
         _userFuture = Future.value(user);
       });
+      Get.find<TcpController>().userChats.value = chats;
 
       await Get.find<GlobalController>().saveUserSession(UserEntity(
-          id: user.id, chats: user.chats // salva o nosso ID e chat na cache
-          ));
+        id: user.id, chats: chats, // salva o nosso ID e chat na cache
+      ));
 
       print("aaa${user.chats}");
     }

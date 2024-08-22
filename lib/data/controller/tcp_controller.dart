@@ -171,7 +171,12 @@ class TcpController extends GetxController {
     print(userChats.value.map((e) => e.receiver));
     print(userChatId);
     int index = userChats.value.indexWhere((e) => e.receiver == userChatId);
-    ChatEntity selectedChat = userChats.value[index];
+    late ChatEntity selectedChat;
+    if (index == -1) {
+      selectedChat = ChatEntity(receiver: userChatId, messages: []);
+    } else {
+      selectedChat = userChats.value[index];
+    }
     selectedChat.messages!.add(message);
     userChats.value[index] = selectedChat;
     count.value += 1;
