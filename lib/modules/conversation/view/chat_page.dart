@@ -48,14 +48,13 @@ class _ChatPageState extends State<ChatPage> {
       chat.messages?.add(messageDone);
     });
 
-    // atualizando o usuário salvando o chat com uma mensagem
-    // Future<void> savingOnCache(
-    //     String idUser, List<ChatEntity> chatList) async {
-    //   await Get.find<GlobalController>().saveUserSession(UserEntity(
-    //       id: id,
-    //       chats: chatList // salva o nosso ID e chat na cache
-    //       ));
-    // }
+    // // atualizando o usuário salvando o chat com uma mensagem
+    // final a = await Get.find<GlobalController>().getUserSession();
+
+    // await Get.find<GlobalController>().saveUserSession(
+    //   UserEntity(id: id!, chats: chatList // salva o nosso ID e chat na cache
+    //       ),
+    // );
   }
 
   @override

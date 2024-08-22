@@ -24,12 +24,11 @@ class UserEntity extends GetxController {
     return jsonEncode(toMap());
   }
 
-  factory UserEntity.fromMap(Map<String, dynamic> map) {
-    return UserEntity(
-      id: map['id'],
-      chats: List<ChatEntity>.from(map['chats'].map((chat) {
-        return ChatEntity.fromMap(chat);
-      })),
-    );
-  }
+  UserEntity.fromMap(Map<String, dynamic> map)
+      : this(
+          id: map['id'],
+          chats: List<ChatEntity>.from(map['chats'].map((chat) {
+            return ChatEntity.fromMap(chat);
+          })),
+        );
 }
