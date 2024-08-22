@@ -33,7 +33,7 @@ class TcpController extends GetxController {
 
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect(connectLocalHost, 65431);
+      _socket = await Socket.connect(connectPaulao, 10820);
       final currentUser = await Get.find<GlobalController>().getUserSession();
       if (currentUser == null) {
         sendMessage("01");
