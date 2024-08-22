@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
 import 'package:whats_2/entity/chat_entity.dart';
 import 'package:whats_2/entity/message_entity.dart';
+import 'package:whats_2/entity/user_entity.dart';
 import 'package:whats_2/global_controller.dart';
 
 class ChatController {
   List<MessageEntity> messages = [];
 
-  Future<MessageEntity?> sendMessageToList({
+  Future<List<MessageEntity>?> sendMessageToList({
     required List<MessageEntity>? list,
     required String content,
     String? senderId,
@@ -21,14 +22,16 @@ class ChatController {
       content: content,
       timeStamp: timeStamp,
     );
+    print("ccc3${list}");
     list?.add(message);
-    return message;
+    print("ccc4${list}");
+    return list;
   }
 
-  Future<bool> isSentByMe(MessageEntity message) async {
+  Future<bool> isSentByMe(dynamic receiverId) async {
     final userId = await Get.find<GlobalController>().getUserId();
 
-    return message.senderId == userId;
+    return receiverId != userId;
   }
 
 //t

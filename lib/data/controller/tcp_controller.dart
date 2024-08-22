@@ -30,7 +30,7 @@ class TcpController extends GetxController {
 
     try {
       // Conecta ao servidor Python
-      _socket = await Socket.connect(connectLocalHostEmul, 65431);
+      _socket = await Socket.connect(connectPaulao, 10715);
       print(
           'Connected to: ${_socket.remoteAddress.address}:${_socket.remotePort}');
       _isConnected = true;
@@ -62,18 +62,52 @@ class TcpController extends GetxController {
             print("Mensagem de confirmação recebida: $receivedData");
           } else if (receivedData.startsWith('06')) {
             //salvando msg recebida
-            await Get.find<GlobalController>()
-                .saveMessagesSession(MessageEntity(
-              content: receivedData.substring(43),
+
+            //pegando a mensagem recebida
+            final userInstance =
+                await Get.find<GlobalController>().getUserSession();
+
+            final ChatEntity chatSelected = userInstance!.chats[0];
+
+            final MessageEntity mensagemRecebida = MessageEntity(
+              content: receivedData.substring(37),
               receiverId: receivedData.substring(15, 28),
               senderId: receivedData.substring(2, 15),
-              timeStamp: receivedData.substring(28, 42),
-            )); //salvar msg da cache pra lista??
-            print("ALGUEM QUER CONTATO????");
-            print(receivedData.substring(42));
+              timeStamp: receivedData.substring(28, 37),
+            );
+
+            print("rrr1${mensagemRecebida}");
+
+            print("rrr2${chatSelected.messages}");
+
+            chatSelected.messages?.add(mensagemRecebida);
+
+            print("rrr3${chatSelected.messages}");
+
+            print("rrr4${userInstance.chats[0].messages?[0]}");
+
+            //salvando a mensagem recebida no userentity
+            await Get.find<GlobalController>().saveUserSession(UserEntity(
+                id: userInstance.id,
+                chats: userInstance.chats // salva o nosso ID e chat na cache
+                ));
+
+            print("rrr5${userInstance.chats[0].messages?[0]}");
+
+            print("${receivedData.substring(2)}");
+
+            print("???");
+            print(receivedData.substring(0, 2));
+            print(receivedData.substring(2, 15));
+            print(receivedData.substring(15, 28));
+            print(receivedData.substring(28, 37));
+            print(receivedData.substring(37));
+            print("???");
+
+            /* print(receivedData.substring(37));
             print(receivedData.substring(15, 28));
             print(receivedData.substring(2, 15));
-            print(receivedData.substring(28, 42));
+            print(receivedData.substring(28, 37));*/
           }
         },
         onError: (error) {
@@ -95,7 +129,7 @@ class TcpController extends GetxController {
     }
   }
 
-  Future<void> sendTextMessage(
+  Future<String?> sendTextMessage(
     String receiverId,
     String content,
   ) async {
@@ -116,16 +150,10 @@ class TcpController extends GetxController {
     String sendMessageToServer =
         "05${message.senderId}${message.receiverId}${message.timeStamp}${message.content}";
 
-    //salvando na cache
+    print("AQUI É DENTRO DO ENVIO DE MENSAGEM!!!!!");
+    print(sendMessageToServer);
     _socket.write(sendMessageToServer);
-    if (receivedData.startsWith('07')) {
-      await Get.find<GlobalController>().saveMessagesSession(MessageEntity(
-        content: message.content,
-        receiverId: message.receiverId,
-        senderId: message.senderId,
-        timeStamp: message.timeStamp,
-      ));
-    }
+    return userId;
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class MessageEntity {
-  String? senderId;
+  dynamic? senderId;
   String? receiverId;
   String content;
   String? timeStamp;
@@ -14,7 +14,7 @@ class MessageEntity {
   });
 
   // Serializa a mensagem para JSON
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> tsoMap() {
     return {
       'senderId': senderId,
       'receiverId': receiverId,
@@ -33,7 +33,12 @@ class MessageEntity {
     );
   }
 
-  String toJsonString() {
-    return jsonEncode(toMap());
+  factory MessageEntity.fromMap(Map<String, dynamic> json) {
+    return MessageEntity(
+      senderId: json['senderId'],
+      receiverId: json['receiverId'],
+      content: json['content'],
+      timeStamp: json['timeStamp'],
+    );
   }
 }

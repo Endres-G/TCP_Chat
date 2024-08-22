@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:whats_2/data/controller/tcp_controller.dart';
 import 'package:whats_2/entity/user_entity.dart';
+import 'package:whats_2/global_controller.dart';
 import 'package:whats_2/modules/conversation/view/chat_page.dart';
 import 'package:whats_2/entity/chat_entity.dart';
 import 'package:whats_2/modules/conversation/controller/chat_controller.dart';
@@ -40,17 +43,18 @@ class _ConversationsPageState extends State<ConversationsPage>
           } else if (snapshot.hasError) {
             return Center(child: Text('Erro: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data == null) {
+            print("ddd${snapshot.data}");
             return Center(child: Text('Nenhum usuário encontrado.'));
           } else {
             final user = snapshot.data!;
             return ListView.builder(
               itemCount: user.chats?.length ?? 0,
               itemBuilder: (context, index) {
-                final chat = user.chats?[index];
-                var lastMessage = chat?.lastMessage ?? "última msg aqui";
+                final ChatEntity? chat = user.chats?[index];
+
                 return ListTile(
                   title: Text(chat!.receiver),
-                  subtitle: Text(lastMessage),
+                  subtitle: Text("última mensagem aqui"),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -95,7 +99,7 @@ class _ConversationsPageState extends State<ConversationsPage>
             TextButton(
               child: Text('Adicionar'),
               onPressed: () {
-                final id = _textController.text;
+                final id = "10000000000${_textController.text}";
                 _addChat(id);
                 Navigator.of(context).pop();
               },
@@ -114,13 +118,19 @@ class _ConversationsPageState extends State<ConversationsPage>
       // Atualiza o estado com a cópia local do usuário
       print("aaa${user.chats}");
       setState(() {
-        user.chats?.add(ChatEntity(
-            receiver: id,
-            messages: chatController
-                .messages)); // Atualize a lógica de mensagens conforme necessário
-        _userFuture =
-            Future.value(user); // Atualiza o Future para refletir a mudança
+        print("sss${chatController.messages}");
+        user.chats
+            ?.add(ChatEntity(receiver: id, messages: chatController.messages));
+
+        // Atualiza o Future para refletir a mudança
+
+        _userFuture = Future.value(user);
       });
+
+      await Get.find<GlobalController>().saveUserSession(UserEntity(
+          id: user.id, chats: user.chats // salva o nosso ID e chat na cache
+          ));
+
       print("aaa${user.chats}");
     }
   }

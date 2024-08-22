@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:whats_2/entity/chat_entity.dart';
+import 'package:whats_2/entity/message_entity.dart';
 
 class UserEntity extends GetxController {
   String id;
-  List<dynamic> chats;
+  List<ChatEntity> chats;
 
   UserEntity({
     required this.id,
@@ -13,17 +14,24 @@ class UserEntity extends GetxController {
   });
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'chats': chats};
+    return {
+      'id': id,
+      'chats': chats.map((chat) => chat.toMap()).toList(),
+    };
   }
 
   String toJsonString() {
     return jsonEncode(toMap());
   }
 
-  static UserEntity fromMap(map) {
+  factory UserEntity.fromMap(Map<String, dynamic> map) {
     return UserEntity(
       id: map['id'],
-      chats: map['chats'],
+      chats: List<ChatEntity>.from(map['chats'].map((chat) {
+        print(chat);
+        print(chat.runtimeType);
+        return ChatEntity.fromMap(chat);
+      })),
     );
   }
 }
